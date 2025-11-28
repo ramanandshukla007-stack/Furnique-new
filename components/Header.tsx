@@ -17,6 +17,9 @@ export default function Header() {
           {session ? (
             <>
               <span className="ml-4">{session.user?.email}</span>
+              {session.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL ? (
+                <a href="/admin" className="ml-4 hover:underline">Admin</a>
+              ) : null}
               <button onClick={() => signOut()} className="ml-2 text-sm underline">Sign out</button>
             </>
           ) : (

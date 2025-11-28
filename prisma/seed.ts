@@ -14,6 +14,7 @@ async function main() {
       description: 'Comfortable 3-seater sofa with removable cushions',
       images: ['/images/sofa-1.jpg'],
       tags: ['sofa', 'living'],
+      visible: true,
       fabrics: {
         create: [
           { name: 'Stone Linen', patternUrl: '/fabrics/linen.jpg' },

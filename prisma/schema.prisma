@@ -25,6 +25,7 @@ model Product {
   images      String[]  @default([])
   tags        String[]  @default([])
   fabrics     Fabric[]
+  visible     Boolean   @default(true)
   createdAt   DateTime  @default(now())
 }
 
