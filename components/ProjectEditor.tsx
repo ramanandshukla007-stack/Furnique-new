@@ -9,6 +9,8 @@ export default function ProjectEditor({ initial, onSave }: { initial?: any; onSa
   const initialRooms: Room[] = initial?.rooms ?? []
   const [name, setName] = useState(initial?.name ?? '')
   const [rooms, setRooms] = useState<Room[]>(initialRooms)
+  const [saving, setSaving] = useState(false)
++  const { showToast } = useToast()
 
   function addRoom() {
     setRooms([...rooms, { id: uuidv4(), name: 'Room', width: 3, height: 3, depth: 1, items: [] }])
@@ -33,16 +35,42 @@ export default function ProjectEditor({ initial, onSave }: { initial?: any; onSa
     updateRoom(roomId, { items: room.items.filter((i) => i.id !== itemId) })
   }
 
+  function validate() {
+    if (!name.trim()) return 'Project name is required'
+    if (rooms.length === 0) return 'Add at least one room'
+    for (const r of rooms) {
+      if (!r.width || !r.height) return `Room ${r.name || ''} requires width and height`
+      for (const it of r.items) {
+        if (!it.quantity || it.quantity < 1) return `All items must have quantity >= 1`
+      }
+    }
+    return null
+  }
+
   async function save() {
-    const payload = { name: name || 'Project', rooms }
-    if (initial?.id) {
-      const res = await fetch(`/api/calculator/${initial.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
-      const data = await res.json()
-      onSave?.(data.project ?? data)
-    } else {
-      const res = await fetch('/api/calculator', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
-      const data = await res.json()
-      onSave?.(data.project ?? data)
+    const err = validate()
+    if (err) {
+      showToast(err, 'error')
+      return
+    }
+    setSaving(true)
+    try {
+      const payload = { name: name || 'Project', rooms }
+      let data
+      if (initial?.id) {
+        const res = await fetch(`/api/calculator/${initial.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+        data = await res.json()
+      } else {
+        const res = await fetch('/api/calculator', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+        data = await res.json()
+      }
+      const project = data.project ?? data
+      showToast('Project saved', 'success')
+      onSave?.(project)
+    } catch (e: any) {
+      showToast(e?.message || 'Save failed', 'error')
+    } finally {
+      setSaving(false)
     }
   }
 
@@ -66,7 +94,7 @@ export default function ProjectEditor({ initial, onSave }: { initial?: any; onSa
                 <input value={r.name} onChange={(e) => updateRoom(r.id, { name: e.target.value })} className="border px-2 py-1 rounded" />
                 <button onClick={() => removeRoom(r.id)} className="text-sm text-red-600">Remove</button>
               </div>
-              <div className="mt-2 grid grid-cols-3 gap-2">
+              <div className="mt-2 grid grid-cols-1 md:grid-cols-3 gap-2">
                 <input value={String(r.width)} onChange={(e) => updateRoom(r.id, { width: Number(e.target.value) })} className="border px-2 py-1 rounded" placeholder="Width (m)" />
                 <input value={String(r.height)} onChange={(e) => updateRoom(r.id, { height: Number(e.target.value) })} className="border px-2 py-1 rounded" placeholder="Height (m)" />
                 <input value={String(r.depth ?? '')} onChange={(e) => updateRoom(r.id, { depth: Number(e.target.value) })} className="border px-2 py-1 rounded" placeholder="Depth (m)" />
@@ -96,7 +124,7 @@ export default function ProjectEditor({ initial, onSave }: { initial?: any; onSa
       </div>
 
       <div className="flex space-x-2">
-        <button onClick={save} className="bg-indigo-600 text-white px-4 py-2 rounded">Save Project</button>
+        <button onClick={save} disabled={saving} className={`bg-indigo-600 text-white px-4 py-2 rounded ${saving ? 'opacity-60' : ''}`}>{saving ? 'Saving...' : 'Save Project'}</button>
       </div>
     </div>
   )
