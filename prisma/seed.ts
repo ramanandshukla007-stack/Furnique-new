@@ -26,7 +26,8 @@ async function main() {
 
   console.log('Seeded product:', product.name)
 
-  await db.user.create({ data: { email: 'demo@furnique.test', name: 'Demo User', password: 'changeme' } })
+    const hashed = await bcrypt.hash('changeme', 10)
+    await db.user.create({ data: { email: 'demo@furnique.test', name: 'Demo User', password: hashed } })
 }
 
 main()
@@ -35,5 +36,5 @@ main()
     process.exit(1)
   })
   .finally(async () => {
-    await PrismaClient.prototype.$disconnect.call(new PrismaClient())
+      await db.$disconnect()
   })

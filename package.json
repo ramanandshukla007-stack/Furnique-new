@@ -33,6 +33,7 @@
     "@testing-library/react": "^14.0.0",
     "@testing-library/jest-dom": "^6.0.0",
     "eslint": "^8.0.0",
-    "eslint-config-next": "^13.0.0"
+    "eslint-config-next": "^13.0.0",
+    "@next-auth/prisma-adapter": "^1.0.5"
   }
 }
