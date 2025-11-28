@@ -1,6 +1,5 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
-  "/admin/page": "app/admin/page.js",
   "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
   "/api/auth/register/route": "app/api/auth/register/route.js",
   "/api/bookings/[id]/route": "app/api/bookings/[id]/route.js",
@@ -13,13 +12,14 @@
   "/auth/register/page": "app/auth/register/page.js",
   "/bookings/[id]/page": "app/bookings/[id]/page.js",
   "/bookings/new/page": "app/bookings/new/page.js",
-  "/bookings/page": "app/bookings/page.js",
   "/calculator/[id]/page": "app/calculator/[id]/page.js",
   "/calculator/new/page": "app/calculator/new/page.js",
+  "/admin/page": "app/admin/page.js",
   "/calculator/page": "app/calculator/page.js",
   "/cart/page": "app/cart/page.js",
   "/catalog/page": "app/catalog/page.js",
   "/page": "app/page.js",
   "/products/[id]/page": "app/products/[id]/page.js",
-  "/visualizer/page": "app/visualizer/page.js"
+  "/visualizer/page": "app/visualizer/page.js",
+  "/bookings/page": "app/bookings/page.js"
 }

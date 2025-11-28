@@ -13,9 +13,8 @@ export default function CurtainCalculator({
   defaultFabric?: string
 }) {
   const fabrics = getAvailableFabrics()
-  const [unit, setUnit] = useState<'metric' | 'imperial'>('metric')
-  const [rodWidth, setRodWidth] = useState<number>(1.5)
-  const [finishedLength, setFinishedLength] = useState<number>(2.1)
+  const [rodWidth, setRodWidth] = useState<number>(59)
+  const [finishedLength, setFinishedLength] = useState<number>(83)
   const [quantity, setQuantity] = useState<number>(1)
   const [fabric, setFabric] = useState<string>(defaultFabric)
   const [style, setStyle] = useState<string>('pencil')
@@ -28,7 +27,7 @@ export default function CurtainCalculator({
   const [liningPricePerYd, setLiningPricePerYd] = useState<number>(400)
   const [patternRepeat, setPatternRepeat] = useState<number>(0)
 
-  // Build item for calculation
+  // Build item for calculation (all inputs now in inches)
   const item: any = useMemo(() => ({
     type: 'curtain',
     quantity,
@@ -44,20 +43,13 @@ export default function CurtainCalculator({
     liningPricePerYd,
   }), [quantity, rodWidth, finishedLength, fabricWidthIn, patternRepeat, lining, style, pricePerYd, liningPricePerYd])
 
-  // Convert inputs to inches if metric selected
+  // All inputs are in inches, no unit conversion needed
   const itemForCalc = useMemo(() => {
     const clone = { ...item } as any
-    if (unit === 'metric') {
-      // Convert meters to inches
-      clone.width = (item.width ?? 0) * 39.3700787
-      clone.height = (item.height ?? 0) * 39.3700787
-      clone.rodWidth = (item.rodWidth ?? 0) * 39.3700787
-      clone.finishedLength = (item.finishedLength ?? 0) * 39.3700787
-    }
     clone.fabricWidth = fabricWidthIn
     clone.patternRepeat = patternRepeat
     return clone
-  }, [item, unit, fabricWidthIn, patternRepeat])
+  }, [item, fabricWidthIn, patternRepeat])
 
   const breakdown = useMemo(() => calculateCurtainBreakdown(itemForCalc, { wasteMultiplier: 1.12, minYardage: 0.5 }, 0), [itemForCalc])
   const fabricYds = breakdown.totalFabricYds
@@ -73,7 +65,7 @@ export default function CurtainCalculator({
     const payload = {
       id: `curtain-${Date.now()}`,
       type: 'curtain',
-      name: `Curtain ${quantity}x ${rodWidth}${unit === 'metric' ? 'm' : 'in'}`,
+      name: `Curtain ${quantity}x ${rodWidth}in`,
       quantity,
       rodWidth,
       finishedLength,
@@ -96,18 +88,17 @@ export default function CurtainCalculator({
       <div className="flex items-center gap-3 mb-4">
         <div className="text-sm font-semibold">Measurement Unit</div>
         <div className="ml-4 flex gap-2">
-          <button className={`px-3 py-1 rounded ${unit === 'metric' ? 'bg-luxury-deep-gray text-white' : 'bg-gray-100'}`} onClick={() => setUnit('metric')}>Metric (m)</button>
-          <button className={`px-3 py-1 rounded ${unit === 'imperial' ? 'bg-luxury-deep-gray text-white' : 'bg-gray-100'}`} onClick={() => setUnit('imperial')}>Imperial (ft/in)</button>
+
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-3 mb-3">
         <div>
-          <label className="block text-xs font-semibold">Rod / Track Width ({unit === 'metric' ? 'meters' : 'inches'})</label>
+          <label className="block text-xs font-semibold">Rod / Track Width (inches)</label>
           <input className="w-full px-3 py-2 border rounded" type="number" value={rodWidth} onChange={(e) => setRodWidth(Number(e.target.value))} step="0.1" />
         </div>
         <div>
-          <label className="block text-xs font-semibold">Finished Length ({unit === 'metric' ? 'meters' : 'inches'})</label>
+          <label className="block text-xs font-semibold">Finished Length (inches)</label>
           <input className="w-full px-3 py-2 border rounded" type="number" value={finishedLength} onChange={(e) => setFinishedLength(Number(e.target.value))} step="0.1" />
         </div>
         <div>
