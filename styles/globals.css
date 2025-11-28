@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -7,10 +9,87 @@ html, body, #__next {
 }
 
 body {
-  @apply bg-white text-slate-800 antialiased;
-  font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  @apply bg-luxury-cream text-luxury-deep-gray antialiased;
+  font-family: 'Montserrat', ui-sans-serif, system-ui;
 }
 
-.hero-gradient {
-  background: linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.2));
+/* Luxury Typography */
+h1, h2, h3, h4, h5, h6 {
+  @apply font-serif font-bold;
+  letter-spacing: 0.5px;
 }
+
+h1 {
+  @apply text-4xl md:text-5xl tracking-tight;
+}
+
+h2 {
+  @apply text-3xl md:text-4xl;
+}
+
+h3 {
+  @apply text-2xl md:text-3xl;
+}
+
+/* Luxury Buttons */
+.btn-luxury-primary {
+  @apply px-6 py-3 md:px-8 md:py-4 bg-luxury-gold text-luxury-deep-gray rounded font-semibold tracking-wide transition-all duration-300 hover:bg-luxury-dark-gold hover:shadow-luxury-hover;
+}
+
+.btn-luxury-secondary {
+  @apply px-6 py-3 md:px-8 md:py-4 bg-luxury-deep-gray text-luxury-cream rounded font-semibold tracking-wide border-2 border-luxury-gold transition-all duration-300 hover:bg-luxury-dark-gold;
+}
+
+.btn-luxury-outline {
+  @apply px-6 py-3 md:px-8 md:py-4 bg-transparent text-luxury-gold border-2 border-luxury-gold rounded font-semibold tracking-wide transition-all duration-300 hover:bg-luxury-gold hover:text-luxury-deep-gray;
+}
+
+/* Luxury Cards */
+.card-luxury {
+  @apply bg-white rounded-lg shadow-luxury hover:shadow-luxury-hover transition-all duration-300 overflow-hidden;
+}
+
+.card-luxury-image {
+  @apply relative overflow-hidden bg-luxury-light-gray h-64 md:h-80;
+}
+
+.card-luxury-image img {
+  @apply w-full h-full object-cover hover:scale-105 transition-transform duration-500;
+}
+
+/* Gold Accents */
+.accent-gold {
+  @apply text-luxury-gold;
+}
+
+.border-gold {
+  @apply border-b-2 border-luxury-gold;
+}
+
+.bg-gold-subtle {
+  @apply bg-opacity-5 bg-luxury-gold;
+}
+
+/* Luxury Gradient */
+.hero-gradient {
+  background: linear-gradient(135deg, rgba(44, 44, 44, 0.85), rgba(212, 175, 55, 0.3));
+}
+
+.gradient-luxury-subtle {
+  background: linear-gradient(135deg, #F5F3E8 0%, #FFFBF5 100%);
+}
+
+/* Input Styling */
+input, textarea, select {
+  @apply font-sans border-2 border-luxury-light-gray rounded px-4 py-2 transition-colors duration-200;
+}
+
+input:focus, textarea:focus, select:focus {
+  @apply outline-none border-luxury-gold bg-luxury-soft-cream;
+}
+
+/* Divider Styling */
+.divider-luxury {
+  @apply h-1 bg-gradient-to-r from-transparent via-luxury-gold to-transparent my-8;
+}
+

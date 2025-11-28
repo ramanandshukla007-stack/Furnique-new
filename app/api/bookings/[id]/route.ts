@@ -4,7 +4,7 @@ import { getServerSession } from 'next-auth/next'
 import authOptions from '../../../../lib/auth'
 
 export async function PATCH(request: Request, { params }: { params: { id: string } }) {
-  const session = await getServerSession(authOptions as any)
+  const session: any = await getServerSession(authOptions as any)
   if (!session?.user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const id = Number(params.id)
   const body = await request.json()
@@ -17,7 +17,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
 }
 
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
-  const session = await getServerSession(authOptions as any)
+  const session: any = await getServerSession(authOptions as any)
   if (!session?.user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const id = Number(params.id)
   const booking = await prisma.booking.findUnique({ where: { id } })

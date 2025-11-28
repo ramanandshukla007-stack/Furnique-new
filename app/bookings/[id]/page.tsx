@@ -4,7 +4,7 @@ import { getServerSession } from 'next-auth/next'
 import authOptions from '../../../lib/auth'
 
 export default async function BookingDetail({ params }: { params: { id: string } }) {
-  const session = await getServerSession(authOptions as any)
+  const session: any = await getServerSession(authOptions as any)
   const id = Number(params.id)
   const booking = await prisma.booking.findUnique({ where: { id } })
   if (!booking) return <div>Booking not found</div>

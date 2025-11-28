@@ -5,7 +5,7 @@ import authOptions from '../../lib/auth'
 import Link from 'next/link'
 
 export default async function AdminPage() {
-  const session = await getServerSession(authOptions as any)
+  const session: any = await getServerSession(authOptions as any)
   if (!session?.user?.email || session.user.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
     return <div>Forbidden</div>
   }

@@ -5,7 +5,7 @@ import authOptions from '../../../lib/auth'
 import ProjectEditor from '../../../components/ProjectEditor'
 
 export default async function EditProjectPage({ params }: { params: { id: string } }) {
-  const session = await getServerSession(authOptions as any)
+  const session: any = await getServerSession(authOptions as any)
   const id = Number(params.id)
   const project = await prisma.calculatorProject.findUnique({ where: { id } })
   if (!project) return <div>Project not found</div>
@@ -16,7 +16,6 @@ export default async function EditProjectPage({ params }: { params: { id: string
   return (
     <div>
       <h1 className="text-2xl font-semibold mb-4">Edit Project</h1>
-      {/* @ts-expect-error Server -> Client */}
       <ProjectEditor initial={project} onSave={(p: any) => { /* client will handle redirect */ }} />
       <div className="mt-4">
         <form method="post" action={`/api/calculator/${id}?_method=delete`}>

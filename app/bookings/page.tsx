@@ -4,7 +4,7 @@ import { getServerSession } from 'next-auth/next'
 import authOptions from '../../lib/auth'
 
 export default async function BookingsPage() {
-  const session = await getServerSession(authOptions as any)
+  const session: any = await getServerSession(authOptions as any)
   let bookings: any[] = []
   if (session?.user?.id) {
     bookings = await prisma.booking.findMany({ where: { userId: session.user.id } })
