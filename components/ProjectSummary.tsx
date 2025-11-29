@@ -2,6 +2,7 @@
 import React from 'react'
 import { calculateProject } from '@/lib/calculator'
 import type { Room } from '@/lib/calculator'
+import { estimateCost } from '@/lib/calculator'
 
 interface ProjectSummaryProps {
   rooms: Room[]
@@ -12,22 +13,24 @@ export default function ProjectSummary({ rooms, fabricType = 'cotton' }: Project
   const { roomBreakdowns, grandTotal } = calculateProject({ rooms, fabricType: fabricType as any })
 
   // Rough estimate: ₹500/yard
-  const estimatedCost = Math.round(grandTotal * 500)
+  const { grandTotalMeters, grandTotalSqFt } = calculateProject({ rooms, fabricType: fabricType as any })
+  const pricePerMeter = 1000
+  const estimatedCost = estimateCost(grandTotalMeters || 0, fabricType as any, pricePerMeter)
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       {/* Total Fabric */}
       <div className="card-luxury p-6">
         <div className="text-luxury-sage text-sm font-semibold uppercase tracking-wide mb-2">Total Fabric Required</div>
-        <div className="text-3xl font-serif font-bold text-luxury-gold">{grandTotal}</div>
-        <div className="text-sm text-luxury-sage mt-2">yards of 54" fabric</div>
+        <div className="text-3xl font-serif font-bold text-luxury-gold">{grandTotal} yd</div>
+        <div className="text-sm text-luxury-sage mt-2">(~{grandTotalMeters} m · {grandTotalSqFt} sqft)</div>
       </div>
 
       {/* Estimated Cost */}
       <div className="card-luxury p-6">
         <div className="text-luxury-sage text-sm font-semibold uppercase tracking-wide mb-2">Estimated Cost</div>
-        <div className="text-3xl font-serif font-bold text-luxury-gold">₹{(estimatedCost / 100).toLocaleString()}</div>
-        <div className="text-sm text-luxury-sage mt-2">at ₹500/yard ({fabricType})</div>
+        <div className="text-3xl font-serif font-bold text-luxury-gold">₹{estimatedCost.toLocaleString()}</div>
+        <div className="text-sm text-luxury-sage mt-2">at ₹{pricePerMeter}/m ({fabricType})</div>
       </div>
 
       {/* Items & Rooms */}
@@ -57,7 +60,7 @@ export default function ProjectSummary({ rooms, fabricType = 'cotton' }: Project
                 </div>
                 <div className="pt-2 border-t border-luxury-gold border-opacity-20 flex justify-between font-semibold">
                   <span className="text-luxury-deep-gray text-sm">Total:</span>
-                  <span className="text-luxury-gold">{room.roomTotal} yd</span>
+                  <span className="text-luxury-gold">{room.roomTotal} yd • ~{room.roomMeters} m • {room.roomSqFt} sqft</span>
                 </div>
               </div>
             ))}

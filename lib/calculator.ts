@@ -93,12 +93,18 @@ function roundToNearestQuarterYard(yards: number): number {
   return Math.ceil(yards * 4) / 4
 }
 
+// Fabric width constants
+const FABRIC_WIDTH_IN = 54
+const FABRIC_WIDTH_M = FABRIC_WIDTH_IN * 0.0254 // 1 inch = 0.0254 m
+
 /**
  * Calculate yardage for a single furniture item
  * All dimension inputs are in inches; output is in yards
  */
 export function calculateFurnitureYardage(item: Item): {
   yardage: number
+  meters?: number
+  areaSqFt?: number
   details: string
 } {
   const type = (item.type || '').toLowerCase().trim()
@@ -106,22 +112,37 @@ export function calculateFurnitureYardage(item: Item): {
   // SOFAS
   if (type.includes('sofa-2') || type.includes('2-seater') || type.includes('love seat')) {
     const base = FURNITURE_YARDAGE_DEFAULTS['sofa-2seater']
+    const meters = Math.round(base * 0.9144 * 100) / 100
+    const areaM2 = meters * FABRIC_WIDTH_M
+    const areaSqFt = Math.round(areaM2 * 10.7639 * 100) / 100
     return {
       yardage: base,
+      meters,
+      areaSqFt,
       details: `2-seater sofa: ${base} yd (chart default for 2-cushion sofas)`
     }
   }
   if (type.includes('sofa-3') || type.includes('3-seater')) {
     const base = FURNITURE_YARDAGE_DEFAULTS['sofa-3seater']
+    const meters = Math.round(base * 0.9144 * 100) / 100
+    const areaM2 = meters * FABRIC_WIDTH_M
+    const areaSqFt = Math.round(areaM2 * 10.7639 * 100) / 100
     return {
       yardage: base,
+      meters,
+      areaSqFt,
       details: `3-seater sofa: ${base} yd (chart default for 3-cushion sofas)`
     }
   }
   if (type.includes('sofa-4') || type.includes('4-seater') || type.includes('large sofa')) {
     const base = FURNITURE_YARDAGE_DEFAULTS['sofa-4seater']
+    const meters = Math.round(base * 0.9144 * 100) / 100
+    const areaM2 = meters * FABRIC_WIDTH_M
+    const areaSqFt = Math.round(areaM2 * 10.7639 * 100) / 100
     return {
       yardage: base,
+      meters,
+      areaSqFt,
       details: `4-seater sofa: ${base} yd (chart default for large sofas)`
     }
   }
@@ -145,14 +166,24 @@ export function calculateFurnitureYardage(item: Item): {
       const rows = Math.ceil(2 / piecesPerRow) // front + back
       const totalLengthIn = rows * panelHeight
       const yardage = roundToNearestQuarterYard(Math.max(7, totalLengthIn / 36))
+      const meters = Math.round(yardage * 0.9144 * 100) / 100
+      const areaM2 = meters * FABRIC_WIDTH_M
+      const areaSqFt = Math.round(areaM2 * 10.7639 * 100) / 100
       return {
         yardage,
+        meters,
+        areaSqFt,
         details: `Armchair (dimension-based): ${yardage} yd`
       }
     }
     const base = FURNITURE_YARDAGE_DEFAULTS['armchair']
+    const meters = Math.round(base * 0.9144 * 100) / 100
+    const areaM2 = meters * FABRIC_WIDTH_M
+    const areaSqFt = Math.round(areaM2 * 10.7639 * 100) / 100
     return {
       yardage: base,
+      meters,
+      areaSqFt,
       details: `Armchair: ${base} yd (standard default)`
     }
   }
@@ -167,14 +198,24 @@ export function calculateFurnitureYardage(item: Item): {
       const rows = Math.ceil(2 / piecesPerRow) // front + back
       const totalLengthIn = rows * panelHeight
       const yardage = roundToNearestQuarterYard(Math.max(3, totalLengthIn / 36))
+      const meters = Math.round(yardage * 0.9144 * 100) / 100
+      const areaM2 = meters * FABRIC_WIDTH_M
+      const areaSqFt = Math.round(areaM2 * 10.7639 * 100) / 100
       return {
         yardage,
+        meters,
+        areaSqFt,
         details: `Ottoman (dimension-based): ${yardage} yd`
       }
     }
     const base = FURNITURE_YARDAGE_DEFAULTS['ottoman']
+    const meters = Math.round(base * 0.9144 * 100) / 100
+    const areaM2 = meters * FABRIC_WIDTH_M
+    const areaSqFt = Math.round(areaM2 * 10.7639 * 100) / 100
     return {
       yardage: base,
+      meters,
+      areaSqFt,
       details: `Ottoman: ${base} yd (standard default)`
     }
   }
@@ -182,17 +223,27 @@ export function calculateFurnitureYardage(item: Item): {
   // CUSHIONS
   if (type.includes('cushion-small') || type.includes('small cushion')) {
     const base = FURNITURE_YARDAGE_DEFAULTS['cushion-small']
-    return {
-      yardage: base,
-      details: `Small cushion (16"-18"): ${base} yd`
-    }
+      const meters = Math.round(base * 0.9144 * 100) / 100
+      const areaM2 = meters * FABRIC_WIDTH_M
+      const areaSqFt = Math.round(areaM2 * 10.7639 * 100) / 100
+      return {
+        yardage: base,
+        meters,
+        areaSqFt,
+        details: `Small cushion (16"-18"): ${base} yd`
+      }
   }
   if (type.includes('cushion-large') || type.includes('large cushion')) {
-    const base = FURNITURE_YARDAGE_DEFAULTS['cushion-large']
-    return {
-      yardage: base,
-      details: `Large cushion (20"-24"): ${base} yd`
-    }
+      const base = FURNITURE_YARDAGE_DEFAULTS['cushion-large']
+      const meters = Math.round(base * 0.9144 * 100) / 100
+      const areaM2 = meters * FABRIC_WIDTH_M
+      const areaSqFt = Math.round(areaM2 * 10.7639 * 100) / 100
+      return {
+        yardage: base,
+        meters,
+        areaSqFt,
+        details: `Large cushion (20"-24"): ${base} yd`
+      }
   }
   if (type.includes('cushion')) {
     // Generic cushion with dimensions: width, height, thickness
@@ -204,9 +255,15 @@ export function calculateFurnitureYardage(item: Item): {
       const rows = Math.ceil(2 / piecesPerRow) // front + back
       const totalLengthIn = rows * panelHeight
       const yardage = roundToNearestQuarterYard(totalLengthIn / 36)
+      const finalYd = Math.max(0.75, yardage)
+      const meters = Math.round(finalYd * 0.9144 * 100) / 100
+      const areaM2 = meters * FABRIC_WIDTH_M
+      const areaSqFt = Math.round(areaM2 * 10.7639 * 100) / 100
       return {
-        yardage: Math.max(0.75, yardage),
-        details: `Cushion (${item.width}"×${item.height}"): ${Math.max(0.75, yardage)} yd`
+        yardage: finalYd,
+        meters,
+        areaSqFt,
+        details: `Cushion (${item.width}"×${item.height}"): ${finalYd} yd`
       }
     }
     // Fallback to small cushion if no dimensions
@@ -292,11 +349,15 @@ export function calculateItemTotalYardage(item: Item): number {
  * Returns both breakdown by item and total for the room
  */
 export function calculateFabricForRoom(room: Room): {
-  items: Array<{ name: string; type: string; quantity: number; perItemYards: number; totalYards: number; details: string }>
+  items: Array<{ name: string; type: string; quantity: number; perItemYards: number; totalYards: number; perItemMeters?: number; totalMeters?: number; perItemSqFt?: number; totalSqFt?: number; details: string }>
   totalYards: number
+  totalMeters: number
+  totalSqFt: number
 } {
-  const items: Array<{ name: string; type: string; quantity: number; perItemYards: number; totalYards: number; details: string }> = []
+  const items: Array<{ name: string; type: string; quantity: number; perItemYards: number; totalYards: number; perItemMeters?: number; totalMeters?: number; perItemSqFt?: number; totalSqFt?: number; details: string }> = []
   let totalYards = 0
+  let totalMeters = 0
+  let totalSqFt = 0
 
   if (room.items && room.items.length > 0) {
     for (const item of room.items) {
@@ -306,32 +367,63 @@ export function calculateFabricForRoom(room: Room): {
       // Special handling for curtains: use curtain-specific breakdown
       if (item.type && item.type.toLowerCase().includes('curtain')) {
         const breakdown = calculateCurtainBreakdown(item, { wasteMultiplier: 1.0, minYardage: 0.5 }, 0)
-        itemYardage = breakdown.totalFabricYds + (breakdown.totalLiningYds || 0)
+        const itemYards = (breakdown.totalFabricYds || 0) + (breakdown.totalLiningYds || 0)
+        const itemMeters = (breakdown.totalFabricMeters || 0) + (breakdown.totalLiningMeters || 0)
+        const itemSqFt = (breakdown.totalFabricSqFt || 0) + (breakdown.totalLiningSqFt || 0)
+        itemYardage = roundToNearestQuarterYard(itemYards)
         details = `Rod ${breakdown.rodWidthIn}" × ${breakdown.finishedLengthIn}" (${breakdown.fullnessFactor}× fullness)`
+
+        items.push({
+          name: item.name || `${item.type} × ${item.quantity}`,
+          type: item.type,
+          quantity: item.quantity || 1,
+          perItemYards: Math.round(itemYards / Math.max(1, item.quantity || 1) * 100) / 100,
+          totalYards: Math.round(itemYardage * 100) / 100,
+          perItemMeters: Math.round(itemMeters / Math.max(1, item.quantity || 1) * 100) / 100,
+          totalMeters: Math.round(itemMeters * 100) / 100,
+          perItemSqFt: Math.round(itemSqFt / Math.max(1, item.quantity || 1) * 100) / 100,
+          totalSqFt: Math.round(itemSqFt * 100) / 100,
+          details,
+        })
+
+        totalYards += itemYardage
+        totalMeters += itemMeters
+        totalSqFt += itemSqFt
+        continue
       } else {
         // Use furniture yardage rules
         const calc = calculateFurnitureYardage(item)
         const perItemYds = calc.yardage
+        const perItemMeters = calc.meters ?? Math.round(perItemYds * 0.9144 * 100) / 100
+        const perItemAreaSqFt = calc.areaSqFt ?? Math.round((perItemMeters * FABRIC_WIDTH_M) * 10.7639 * 100) / 100
         itemYardage = roundToNearestQuarterYard(perItemYds * (item.quantity || 1))
         details = calc.details
+
+        items.push({
+          name: item.name || `${item.type} × ${item.quantity}`,
+          type: item.type,
+          quantity: item.quantity || 1,
+          perItemYards: Math.round(perItemYds * 100) / 100,
+          totalYards: itemYardage,
+          perItemMeters: Math.round(perItemMeters * 100) / 100,
+          totalMeters: Math.round(perItemMeters * (item.quantity || 1) * 100) / 100,
+          perItemSqFt: Math.round(perItemAreaSqFt * 100) / 100,
+          totalSqFt: Math.round(perItemAreaSqFt * (item.quantity || 1) * 100) / 100,
+          details,
+        })
+
+        totalYards += itemYardage
+        totalMeters += perItemMeters * (item.quantity || 1)
+        totalSqFt += perItemAreaSqFt * (item.quantity || 1)
       }
-
-      items.push({
-        name: item.name || `${item.type} × ${item.quantity}`,
-        type: item.type,
-        quantity: item.quantity || 1,
-        perItemYards: itemYardage / Math.max(1, item.quantity || 1),
-        totalYards: itemYardage,
-        details,
-      })
-
-      totalYards += itemYardage
     }
   }
 
   return {
     items,
     totalYards: roundToNearestQuarterYard(totalYards),
+    totalMeters: Math.round(totalMeters * 100) / 100,
+    totalSqFt: Math.round(totalSqFt * 100) / 100,
   }
 }
 
@@ -447,24 +539,36 @@ export function calculateCurtainBreakdown(
   // Step 4: total fabric length required
   const totalFabricIn = cutLengthIn * widthCount
   const totalFabricYds = Math.round((totalFabricIn / 36) * 100) / 100
+  const totalFabricMeters = Math.round(totalFabricIn * 0.0254 * 100) / 100
+  // area in square feet = (total linear inches * fabric width in inches) / 144
+  const totalFabricSqFt = Math.round((totalFabricIn * fabricWidthIn / 144) * 100) / 100
 
   // Step 5: lining
   const liningCutLengthIn = finishedLengthIn + 8
   const totalLiningIn = liningCutLengthIn * widthCount
   const totalLiningYds = Math.round((totalLiningIn / 36) * 100) / 100
+  const totalLiningMeters = Math.round(totalLiningIn * 0.0254 * 100) / 100
+  const totalLiningSqFt = Math.round((totalLiningIn * fabricWidthIn / 144) * 100) / 100
 
   // Step 6: actual fullness for display
   const actualFullness = (fabricWidthIn * widthCount) / Math.max(1, rodWidthIn)
 
-  // Optional costing
+  // Optional costing (use meters for cost calculations)
   const fabricPricePerYd = (item as any).fabricPricePerYd ?? null
+  const fabricPricePerM = (item as any).fabricPricePerM ?? (fabricPricePerYd != null ? fabricPricePerYd / 0.9144 : null)
   const liningPricePerYd = (item as any).liningPricePerYd ?? null
-  const fabricCost = fabricPricePerYd != null ? Math.round(totalFabricYds * fabricPricePerYd) : null
-  const liningCost = liningPricePerYd != null ? Math.round(totalLiningYds * liningPricePerYd) : null
+  const liningPricePerM = (item as any).liningPricePerM ?? (liningPricePerYd != null ? liningPricePerYd / 0.9144 : null)
+  const fabricCost = fabricPricePerM != null ? Math.round(totalFabricMeters * fabricPricePerM) : null
+  const liningCost = liningPricePerM != null ? Math.round(totalLiningMeters * liningPricePerM) : null
+
+  // Track/tube length in feet
+  const rodWidthFt = Math.round((rodWidthIn / 12) * 100) / 100
+  const totalTrackLengthFt = Math.round((rodWidthFt * qty) * 100) / 100
 
   return {
     qty,
     rodWidthIn: Math.round(rodWidthIn * 100) / 100,
+    rodWidthFt,
     finishedLengthIn: Math.round(finishedLengthIn * 100) / 100,
     fabricWidthIn: Math.round(fabricWidthIn * 100) / 100,
     patternRepeatIn: Math.round(patternRepeatIn * 100) / 100,
@@ -476,12 +580,17 @@ export function calculateCurtainBreakdown(
     cutLengthIn: Math.round(cutLengthIn * 100) / 100,
     totalFabricIn: Math.round(totalFabricIn * 100) / 100,
     totalFabricYds,
+    totalFabricMeters,
+    totalFabricSqFt,
     liningCutLengthIn: Math.round(liningCutLengthIn * 100) / 100,
     totalLiningIn: Math.round(totalLiningIn * 100) / 100,
     totalLiningYds,
+    totalLiningMeters,
+    totalLiningSqFt,
     actualFullness: Math.round(actualFullness * 100) / 100,
     fabricCost,
     liningCost,
+    totalTrackLengthFt,
   }
 }
 
@@ -496,17 +605,25 @@ export function calculateProject(project: {
 }): {
   roomBreakdowns: Array<{
     roomName: string
-    itemBreakdowns: Array<{ name: string; type: string; quantity: number; perItemYards: number; totalYards: number; details: string }>
+    itemBreakdowns: Array<{ name: string; type: string; quantity: number; perItemYards: number; totalYards: number; details: string; totalMeters?: number; totalSqFt?: number }>
     roomTotal: number
+    roomMeters?: number
+    roomSqFt?: number
   }>
   grandTotal: number
+  grandTotalMeters: number
+  grandTotalSqFt: number
 } {
   const roomBreakdowns: Array<{
     roomName: string
-    itemBreakdowns: Array<{ name: string; type: string; quantity: number; perItemYards: number; totalYards: number; details: string }>
+    itemBreakdowns: Array<{ name: string; type: string; quantity: number; perItemYards: number; totalYards: number; details: string; totalMeters?: number; totalSqFt?: number }>
     roomTotal: number
+    roomMeters?: number
+    roomSqFt?: number
   }> = []
   let grandTotal = 0
+  let grandTotalMeters = 0
+  let grandTotalSqFt = 0
 
   for (const room of project.rooms || []) {
     const calc = calculateFabricForRoom(room)
@@ -514,13 +631,19 @@ export function calculateProject(project: {
       roomName: room.name || 'Unnamed Room',
       itemBreakdowns: calc.items,
       roomTotal: calc.totalYards,
+      roomMeters: calc.totalMeters,
+      roomSqFt: calc.totalSqFt,
     })
     grandTotal += calc.totalYards
+    grandTotalMeters += calc.totalMeters || 0
+    grandTotalSqFt += calc.totalSqFt || 0
   }
 
   return {
     roomBreakdowns,
     grandTotal: roundToNearestQuarterYard(grandTotal),
+    grandTotalMeters: Math.round(grandTotalMeters * 100) / 100,
+    grandTotalSqFt: Math.round(grandTotalSqFt * 100) / 100,
   }
 }
 

@@ -2,7 +2,7 @@
 import React, { useState, useMemo } from 'react'
 // @ts-ignore
 import { v4 as uuidv4 } from 'uuid'
-import { calculateFabricForRoom, estimateCost, getAvailableItemTypes, getAvailableFabrics, type FabricType } from '@/lib/calculator'
+import { calculateFabricForRoom, calculateProject, getAvailableItemTypes, getAvailableFabrics, type FabricType } from '@/lib/calculator'
 import CurtainCalculator from '@/components/CurtainCalculator'
 import { useToast } from '@/components/ToastProvider'
 
@@ -23,18 +23,15 @@ export default function ProjectEditor({ initial, onSave }: { initial?: any; onSa
   const itemTypes = getAvailableItemTypes()
   const fabricTypes = getAvailableFabrics()
 
-  // Calculate total fabric needed
-  const totalFabric = useMemo(() => {
-    let total = 0
-    for (const room of rooms) {
-      total += calculateFabricForRoom(room, fabricType, fabricRepeat)
-    }
-    return Math.ceil(total * 100) / 100
+  // Calculate total fabric needed (project-wide), returns yards and breakdowns
+  const { roomBreakdowns, grandTotal: totalYards } = useMemo(() => {
+    return calculateProject({ rooms, fabricType, fabricRepeat })
   }, [rooms, fabricType, fabricRepeat])
 
+  // Rough estimated cost at ₹500 per yard
   const estimatedCost = useMemo(() => {
-    return estimateCost(totalFabric, fabricType, 1000)
-  }, [totalFabric, fabricType])
+    return Math.round(totalYards * 500)
+  }, [totalYards])
 
   function addRoom() {
     const newRoom: Room = {
@@ -144,8 +141,8 @@ export default function ProjectEditor({ initial, onSave }: { initial?: any; onSa
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="card-luxury p-6">
           <div className="text-luxury-sage text-sm font-semibold uppercase tracking-wide mb-2">Total Fabric Needed</div>
-          <div className="text-3xl font-serif font-bold text-luxury-gold">{totalFabric}m²</div>
-          <div className="text-xs text-luxury-sage mt-2">approximately {(totalFabric / 1.4).toFixed(1)} yards</div>
+          <div className="text-3xl font-serif font-bold text-luxury-gold">{totalYards} yards</div>
+          <div className="text-xs text-luxury-sage mt-2">(54" standard width)</div>
         </div>
 
         <div className="card-luxury p-6">
@@ -387,12 +384,26 @@ export default function ProjectEditor({ initial, onSave }: { initial?: any; onSa
                     </div>
 
                     {/* Room Fabric Calculation */}
-                    <div className="pt-2 border-t border-luxury-gold border-opacity-20 bg-luxury-gold bg-opacity-5 p-3 rounded">
-                      <div className="text-xs text-luxury-sage">Fabric needed for this room:</div>
-                      <div className="text-lg font-serif font-bold text-luxury-gold">
-                        {calculateFabricForRoom(room, fabricType, fabricRepeat)}m²
-                      </div>
-                    </div>
+                    {(() => {
+                      const roomCalc = calculateFabricForRoom(room)
+                      return (
+                        <div className="pt-2 border-t border-luxury-gold border-opacity-20 bg-luxury-gold bg-opacity-5 p-3 rounded">
+                          <div className="text-xs text-luxury-sage mb-3">Fabric needed for this room:</div>
+                          <div className="space-y-2 mb-3">
+                            {roomCalc.items.map((item, idx) => (
+                              <div key={idx} className="flex justify-between text-sm">
+                                <span className="text-luxury-deep-gray">{item.name}</span>
+                                <span className="font-semibold text-luxury-gold">{item.totalYards} yd</span>
+                              </div>
+                            ))}
+                          </div>
+                          <div className="pt-2 border-t border-luxury-gold border-opacity-30 flex justify-between font-serif font-bold text-luxury-gold">
+                            <span>Room Total:</span>
+                            <span className="text-lg">{roomCalc.totalYards} yards</span>
+                          </div>
+                        </div>
+                      )
+                    })()}
                   </div>
                 )}
 

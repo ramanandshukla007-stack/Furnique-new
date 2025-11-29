@@ -8,7 +8,7 @@ interface RoomYardageBreakdownProps {
 }
 
 export default function RoomYardageBreakdown({ room }: RoomYardageBreakdownProps) {
-  const { items, totalYards } = calculateFabricForRoom(room)
+  const { items, totalYards, totalMeters, totalSqFt } = calculateFabricForRoom(room)
 
   return (
     <div className="bg-luxury-gold bg-opacity-5 border-2 border-luxury-gold border-opacity-30 rounded-lg p-4 space-y-3">
@@ -27,15 +27,21 @@ export default function RoomYardageBreakdown({ room }: RoomYardageBreakdownProps
                 </div>
                 <div className="text-right">
                   <div className="font-semibold text-luxury-gold">{item.totalYards} yd</div>
-                  <div className="text-xs text-luxury-sage">({item.perItemYards} each)</div>
+                  <div className="text-xs text-luxury-sage">~{item.perItemMeters} m each • {item.perItemSqFt} sqft</div>
                 </div>
               </div>
             ))}
           </div>
           
-          <div className="pt-2 border-t-2 border-luxury-gold flex justify-between items-center">
-            <span className="font-semibold text-luxury-deep-gray">Room Total:</span>
-            <span className="text-lg font-serif font-bold text-luxury-gold">{totalYards} yards</span>
+          <div className="pt-2 border-t-2 border-luxury-gold flex flex-col gap-1">
+            <div className="flex justify-between items-center">
+              <span className="font-semibold text-luxury-deep-gray">Room Total:</span>
+              <span className="text-lg font-serif font-bold text-luxury-gold">{totalYards} yd</span>
+            </div>
+            <div className="flex justify-between items-center text-sm text-luxury-sage">
+              <span>Total (metric):</span>
+              <span>{totalMeters} m • {totalSqFt} sqft</span>
+            </div>
           </div>
         </>
       )}
