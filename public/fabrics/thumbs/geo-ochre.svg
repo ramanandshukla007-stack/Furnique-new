@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600">
+  <rect width="100%" height="100%" fill="#e9c78a" />
+  <circle cx="200" cy="200" r="80" fill="#c77a2a" />
+  <rect x="420" y="240" width="120" height="120" fill="#a55a1a" />
+  <text x="50%" y="520" dominant-baseline="middle" text-anchor="middle" fill="#7b3f18" font-family="Arial, Helvetica, sans-serif" font-size="28">Geometric Print - Ochre</text>
+</svg>

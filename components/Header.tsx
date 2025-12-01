@@ -119,6 +119,12 @@ export default function Header() {
             Calculator
           </Link>
           <Link
+            href="/visualizer"
+            className="text-luxury-cream hover:text-luxury-gold font-semibold transition-colors tracking-wide text-sm uppercase"
+          >
+            Visualizer
+          </Link>
+          <Link
             href="/bookings"
             className="text-luxury-cream hover:text-luxury-gold font-semibold transition-colors tracking-wide text-sm uppercase"
           >

@@ -145,6 +145,28 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* Visualizer Highlight */}
+      <section className="mb-12 md:mb-20">
+        <div className="mb-6">
+          <h2 className="font-serif text-3xl md:text-4xl font-bold text-luxury-deep-gray mb-2">Try Our Fabric Visualizer</h2>
+          <p className="text-luxury-sage">Interactive fabric previews for Interior Designers, Architects and Customers.</p>
+        </div>
+
+        <div className="group relative overflow-hidden rounded-xl h-64 md:h-80 p-6 bg-gradient-to-r from-luxury-cream to-white border-2 border-luxury-gold">
+          <div className="flex flex-col md:flex-row items-center gap-6 h-full">
+            <div className="flex-1">
+              <h3 className="font-serif text-2xl font-bold text-luxury-deep-gray mb-2">Visualizer — Preview fabrics on your furniture</h3>
+              <p className="text-luxury-sage mb-4">Upload a photo, let our AI mask the furniture, and try different fabrics in real time. Ideal for project presentations and client approvals.</p>
+              <div className="flex gap-4">
+                <Link href="/visualizer" className="btn-luxury-primary">Open Visualizer</Link>
+                <Link href="/visualizer" className="btn-luxury-outline">Demo & Docs</Link>
+              </div>
+            </div>
+            <div className="w-48 h-40 bg-cover bg-center rounded-lg shadow-lg" style={{ backgroundImage: 'url(/images/sofa-1.svg)' }} />
+          </div>
+        </div>
+      </section>
+
       {/* Featured Products */}
       <section className="mb-12 md:mb-20">
         <div className="mb-12">
