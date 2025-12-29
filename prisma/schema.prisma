@@ -1,0 +1,145 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int                 @id @default(autoincrement())
+  email     String              @unique
+  name      String?
+  password  String?
+  bookings  Booking[]
+  projects  CalculatorProject[]
+  visualizerUploads VisualizerUpload[]
+  visualizerProjects VisualizerProject[]
+  createdAt DateTime            @default(now())
+}
+
+model Product {
+  id          Int       @id @default(autoincrement())
+  name        String
+  price       Int
+  description String?
+  images      String[]  @default([])
+  tags        String[]  @default([])
+  fabrics     Fabric[]
+  visible     Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+}
+
+model Fabric {
+  id         Int     @id @default(autoincrement())
+  name       String
+  patternUrl String
+  product    Product? @relation(fields: [productId], references: [id])
+  productId  Int?
+}
+
+model CalculatorProject {
+  id        Int      @id @default(autoincrement())
+  name      String
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    Int?
+  rooms     Json
+  createdAt DateTime @default(now())
+}
+
+model Booking {
+  id        Int      @id @default(autoincrement())
+  type      String
+  status    String   @default("pending")
+  date      DateTime?
+  notes     String?
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    Int?
+  createdAt DateTime @default(now())
+}
+
+// ============================================
+// VISUALIZER MODELS
+// ============================================
+
+model FabricLibrary {
+  id                Int       @id @default(autoincrement())
+  code              String    @unique
+  name              String
+  collection        String?
+  colorFamily       String    // e.g., "neutral", "warm", "cool"
+  pattern           String    // e.g., "plain", "stripe", "floral"
+  composition       String?   // e.g., "100% Linen"
+  gsm               Int?      // Grams per square meter
+  width             Int?      // Fabric width in cm
+  pricePerMeter     Int       // Price in ₹/m
+  
+  // Textures & Maps (URLs)
+  thumbnailUrl      String
+  seamlessTextureUrl String
+  normalMapUrl      String?
+  roughnessMapUrl   String?
+  textureScale      Float?    @default(1.0)
+  
+  tags              String[]  @default([])
+  active            Boolean   @default(true)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  // Relations
+  visualizerProjects VisualizerProject[]
+}
+
+model VisualizerUpload {
+  id              String    @id @default(cuid())
+  userId          Int?
+  user            User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  
+  imageUrl        String    // Signed URL or storage path
+  imageWidth      Int
+  imageHeight     Int
+  
+  detectionModel  String?   // Versioning: "yolov8-seg-v1", "sam-v1"
+  detectionData   Json      // Serialized DetectedFurnitureItem[]
+  
+  uploadedAt      DateTime  @default(now())
+}
+
+model VisualizerProject {
+  id              String    @id @default(cuid())
+  userId          Int?
+  user            User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  
+  uploadId        String
+  projectName     String?
+  notes           String?
+  
+  // Store detection & fabric application data
+  detectionData   Json      // Serialized DetectedFurnitureItem[]
+  applications    Json      // Serialized FurnitureItemApplication[]
+  maskEdits       Json?     // Optional user-applied mask refinements
+  
+  // Composite result
+  compositeUrl    String?   // URL to final rendered image
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  // Relations
+  fabricsUsed     FabricLibrary[]
+}
+
+model VisualizerAlphaMask {
+  id              String    @id @default(cuid())
+  uploadId        String
+  itemId          String
+  
+  maskUrl         String    // Signed URL to PNG/WebP mask
+  width           Int
+  height          Int
+  format          String    @default("png") // "png" or "webp"
+  featherRadius   Int?      // Edge feathering in pixels
+  
+  createdAt       DateTime  @default(now())
+}
