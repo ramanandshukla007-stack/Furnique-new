@@ -48,6 +48,28 @@ export default function AdminCatalogEditor() {
     }
   }
 
+  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>, id: string) {
+    const file = e.target.files && e.target.files[0]
+    if (!file) return
+
+    const fd = new FormData()
+    fd.append('file', file)
+    try {
+      const res = await fetch('/api/admin/fabrics/upload', { method: 'POST', body: fd })
+      const data = await res.json()
+      if (data.url) {
+        setFabrics((prev) => prev.map((f) => (f.id === id ? { ...f, thumbnailUrl: data.url } : f)))
+        // Optionally save to DB immediately
+        await saveFabric(id, { thumbnailUrl: data.url })
+      } else {
+        alert('Upload failed')
+      }
+    } catch (err) {
+      console.error(err)
+      alert('Upload error')
+    }
+  }
+
   return (
     <div className="p-4">
       <div className="flex items-center justify-between mb-4">
@@ -79,12 +101,15 @@ export default function AdminCatalogEditor() {
 
             <div className="mt-3 grid grid-cols-2 gap-2">
               <div>
-                <label className="text-xs">Thumbnail URL</label>
-                <input
-                  className="input mt-1 w-full"
-                  value={f.thumbnailUrl || ''}
-                  onChange={(e) => setFabrics((prev) => prev.map((p) => (p.id === f.id ? { ...p, thumbnailUrl: e.target.value } : p)))}
-                />
+                <label className="text-xs">Thumbnail</label>
+                <div className="flex gap-2 items-center mt-1">
+                  <input type="file" accept="image/*" onChange={(e) => handleFileChange(e as any, f.id)} />
+                  <input
+                    className="input w-full"
+                    value={f.thumbnailUrl || ''}
+                    onChange={(e) => setFabrics((prev) => prev.map((p) => (p.id === f.id ? { ...p, thumbnailUrl: e.target.value } : p)))}
+                  />
+                </div>
               </div>
               <div>
                 <label className="text-xs">Tile Scale</label>

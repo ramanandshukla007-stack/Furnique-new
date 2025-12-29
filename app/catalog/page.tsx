@@ -2,7 +2,8 @@ import React from 'react'
 import ProductCard from '../../components/ProductCard'
 
 async function fetchProducts() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL ?? ''}/api/products`, { cache: 'no-store' })
+  const base = process.env.NEXT_PUBLIC_APP_URL || `http://localhost:${process.env.PORT || 3000}`
+  const res = await fetch(`${base}/api/products`, { cache: 'no-store' })
   return res.json()
 }
 

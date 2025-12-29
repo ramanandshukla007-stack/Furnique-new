@@ -90,18 +90,32 @@ export async function POST(request: NextRequest) {
 
     // Record or upsert VisualizerAlphaMask in DB
     try {
-      await prisma.visualizerAlphaMask.create({
-        data: {
-          uploadId,
-          itemId: suffix,
-          maskUrl: `/masks/visualizer/${maskFilename}`,
-          width,
-          height,
-          format: 'png',
-        },
-      })
+      const existing = await prisma.visualizerAlphaMask.findFirst({ where: { uploadId, itemId: suffix } })
+      if (existing) {
+        await prisma.visualizerAlphaMask.update({
+          where: { id: existing.id },
+          data: {
+            maskUrl: `/masks/visualizer/${maskFilename}`,
+            width,
+            height,
+            format: 'png',
+            updatedAt: new Date(),
+          },
+        })
+      } else {
+        await prisma.visualizerAlphaMask.create({
+          data: {
+            uploadId,
+            itemId: suffix,
+            maskUrl: `/masks/visualizer/${maskFilename}`,
+            width,
+            height,
+            format: 'png',
+          },
+        })
+      }
     } catch (e) {
-      // If record exists, ignore
+      console.error('DB save mask error:', e)
     }
 
     return NextResponse.json({ success: true, maskUrl: `/masks/visualizer/${maskFilename}`, strokeCount: brushStrokes.length }, { status: 200 })
